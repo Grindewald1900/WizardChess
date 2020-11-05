@@ -14,7 +14,7 @@ namespace Scrpts.ObjectScripts
         // Start is called before the first frame update
         private void Start()
         {
-            LogUtils.Log(gameObject.name + transform.position);
+            // LogUtils.Log(gameObject.name + transform.position);
             _renderMaterials = GetComponent<MeshRenderer>().materials;
             _materials = new Material[_renderMaterials.Length];
             // TextureNormal = Resources.Load("Texture/SliceTexture/SliceNormal.mat", typeof(Material)) as Material;

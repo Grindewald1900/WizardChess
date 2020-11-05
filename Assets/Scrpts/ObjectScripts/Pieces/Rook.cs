@@ -2,17 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Rook : MonoBehaviour
+namespace Scrpts.ObjectScripts.Pieces
 {
-    // Start is called before the first frame update
-    void Start()
+    public class Rook : Piece
     {
-        
-    }
+        private int _moveStep;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // Start is called before the first frame update
+        private void Start()
+        {
+            _moveStep = 1;
+        }
+
+        public void Initialize(int color, string name, Vector3 pos)
+        {
+            SetColor(color);
+            SetObjectName(name);
+            SetPosition(pos);
+        }
     }
 }
