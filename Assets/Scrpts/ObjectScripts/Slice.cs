@@ -10,6 +10,7 @@ namespace Scrpts.ObjectScripts
         public Material TextureSelected;
         private Material[] _materials;
         private Material[] _renderMaterials;
+        private string _pieceName;
 
         // Start is called before the first frame update
         private void Start()
@@ -26,30 +27,36 @@ namespace Scrpts.ObjectScripts
         // Update is called once per frame
         private void Update()
         {
-            if (Input.GetMouseButtonUp(0))
-            {
-                Debug.Log("Highlight");
-                HighLight();
-            }
-
-            if (Input.GetMouseButtonUp(1))
-            {
-                Debug.Log("Select");
-                Selected();
-            }
+            // if (Input.GetMouseButtonUp(0))
+            // {
+            //     HighLight();
+            // }
+            //
+            // if (Input.GetMouseButtonUp(1))
+            // {
+            //     Selected();
+            // }
         }
 
-        private void HighLight()
+        public string GetPieceName()
+        {
+            return _pieceName;
+        }
+        public void SetPieceName(string pName)
+        {
+            _pieceName = pName;
+        }
+        public void HighLight()
         {
             _renderMaterials[0].color = Color.yellow;
         }
 
-        private void Selected()
+        public void Selected()
         {
             _renderMaterials[0].color = Color.red;
         }
 
-        private void Normal()
+        public void Normal()
         {
             _renderMaterials[0].color = Color.white;
         }

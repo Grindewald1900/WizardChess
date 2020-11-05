@@ -13,12 +13,5 @@ namespace Scrpts.ObjectScripts.Pieces
         {
             _moveStep = 1;
         }
-
-        public void Initialize(int color, string name, Vector3 pos)
-        {
-            SetColor(color);
-            SetObjectName(name);
-            SetPosition(pos);
-        }
     }
 }

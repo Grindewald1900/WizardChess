@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Scrpts.ObjectScripts.Pieces;
+using Scrpts.RuleScripts;
 using Scrpts.ToolScripts;
 using UnityEngine;
 
@@ -7,6 +10,7 @@ namespace Scrpts.ObjectScripts
 {
     public class Board : MonoBehaviour
     {
+        public static Board SharedInstance;
         public Slice[,] SliceList;
         public List<Piece> blackPieceList;
         public List<Piece> whitePieceList;
@@ -22,17 +26,24 @@ namespace Scrpts.ObjectScripts
         private float _boardHeight;
         private float _boardSize;
         private float _pieceSize;
+
+        private Vector3 _mousePosition;
         
         // Start is called before the first frame update
         private void Start()
         {
+            SharedInstance = this;
             _boardHeight = 0.5f * transform.localScale.y;
             _boardSize = transform.localScale.x;
             _pieceSize = 1f;
             InitSlices();
             InitPieces(0);
             InitPieces(1);
+        }
 
+        private void Update()
+        {
+            // OnBoardClicked();
         }
 
 
@@ -77,45 +88,46 @@ namespace Scrpts.ObjectScripts
         {
             if (color == 0) {
                 blackPieceList = new ListChain<Piece>()
-                    .AddItem(PieceInitializer(bishopObject, color, "Bishop-Black-1", GetPositionFromSlice(new Vector2Int(2, 0), bishopObject.transform.localScale.y)))
-                    .AddItem(PieceInitializer(bishopObject, color, "Bishop-Black-2", GetPositionFromSlice(new Vector2Int(5, 0), bishopObject.transform.localScale.y)))
-                    .AddItem(PieceInitializer(rookObject, color, "Rook-Black-1", GetPositionFromSlice(new Vector2Int(0, 0), rookObject.transform.localScale.y)))
-                    .AddItem(PieceInitializer(rookObject, color, "Rook-Black-2", GetPositionFromSlice(new Vector2Int(7, 0), rookObject.transform.localScale.y)))
-                    .AddItem(PieceInitializer(knightObject, color, "Knight-Black-1", GetPositionFromSlice(new Vector2Int(1, 0), knightObject.transform.localScale.y)))
-                    .AddItem(PieceInitializer(knightObject, color, "Knight-Black-2", GetPositionFromSlice(new Vector2Int(6, 0), knightObject.transform.localScale.y)))
-                    .AddItem(PieceInitializer(kingObject, color, "King-Black-1", GetPositionFromSlice(new Vector2Int(3, 0), kingObject.transform.localScale.y)))
-                    .AddItem(PieceInitializer(queenObject, color, "Queen-Black-1", GetPositionFromSlice(new Vector2Int(4, 0), queenObject.transform.localScale.y)))
+                    .AddItem(PieceInitializer(bishopObject, color, "Piece-Bishop-Black-1", GetPositionFromSlice(new Vector2Int(2, 0), bishopObject.transform.localScale.y), new Vector2Int(2, 0)))
+                    .AddItem(PieceInitializer(bishopObject, color, "Piece-Bishop-Black-2", GetPositionFromSlice(new Vector2Int(5, 0), bishopObject.transform.localScale.y), new Vector2Int(5, 0)))
+                    .AddItem(PieceInitializer(rookObject, color, "Piece-Rook-Black-1", GetPositionFromSlice(new Vector2Int(0, 0), rookObject.transform.localScale.y), new Vector2Int(0, 0)))
+                    .AddItem(PieceInitializer(rookObject, color, "Piece-Rook-Black-2", GetPositionFromSlice(new Vector2Int(7, 0), rookObject.transform.localScale.y), new Vector2Int(7, 0)))
+                    .AddItem(PieceInitializer(knightObject, color, "Piece-Knight-Black-1", GetPositionFromSlice(new Vector2Int(1, 0), knightObject.transform.localScale.y), new Vector2Int(1, 0)))
+                    .AddItem(PieceInitializer(knightObject, color, "Piece-Knight-Black-2", GetPositionFromSlice(new Vector2Int(6, 0), knightObject.transform.localScale.y), new Vector2Int(6, 0)))
+                    .AddItem(PieceInitializer(kingObject, color, "Piece-King-Black-1", GetPositionFromSlice(new Vector2Int(3, 0), kingObject.transform.localScale.y), new Vector2Int(3, 0)))
+                    .AddItem(PieceInitializer(queenObject, color, "Piece-Queen-Black-1", GetPositionFromSlice(new Vector2Int(4, 0), queenObject.transform.localScale.y), new Vector2Int(4, 0)))
                     .GetList();
                 for (var i = 1; i <= 8; i++)
                 {
                     var pawn = Instantiate(pawnObject);
-                    pawn.Initialize(color, "pawn-Black-" + i, GetPositionFromSlice(new Vector2Int(i - 1, 1), pawn.transform.localScale.y));
+                    pawn.Initialize(color, "Piece-pawn-Black-" + i, GetPositionFromSlice(new Vector2Int(i - 1, 1), pawn.transform.localScale.y), new Vector2Int(i - 1, 1));
                 }
             }
             else {
                 whitePieceList = new ListChain<Piece>()
-                    .AddItem(PieceInitializer(bishopObject, color, "Bishop-White-1", GetPositionFromSlice(new Vector2Int(2, 7), bishopObject.transform.localScale.y)))
-                    .AddItem(PieceInitializer(bishopObject, color, "Bishop-White-2", GetPositionFromSlice(new Vector2Int(5, 7), bishopObject.transform.localScale.y)))
-                    .AddItem(PieceInitializer(rookObject, color, "Rook-White-1", GetPositionFromSlice(new Vector2Int(0, 7), rookObject.transform.localScale.y)))
-                    .AddItem(PieceInitializer(rookObject, color, "Rook-White-2", GetPositionFromSlice(new Vector2Int(7, 7), rookObject.transform.localScale.y)))
-                    .AddItem(PieceInitializer(knightObject, color, "Knight-White-1", GetPositionFromSlice(new Vector2Int(1, 7), knightObject.transform.localScale.y)))
-                    .AddItem(PieceInitializer(knightObject, color, "Knight-White-2", GetPositionFromSlice(new Vector2Int(6, 7), knightObject.transform.localScale.y)))
-                    .AddItem(PieceInitializer(kingObject, color, "King-White-1", GetPositionFromSlice(new Vector2Int(3, 7), kingObject.transform.localScale.y)))
-                    .AddItem(PieceInitializer(queenObject, color, "Queen-White-1", GetPositionFromSlice(new Vector2Int(4, 7), queenObject.transform.localScale.y)))
+                    .AddItem(PieceInitializer(bishopObject, color, "Piece-Bishop-White-1", GetPositionFromSlice(new Vector2Int(2, 7), bishopObject.transform.localScale.y), new Vector2Int(2, 7)))
+                    .AddItem(PieceInitializer(bishopObject, color, "Piece-Bishop-White-2", GetPositionFromSlice(new Vector2Int(5, 7), bishopObject.transform.localScale.y), new Vector2Int(5, 7)))
+                    .AddItem(PieceInitializer(rookObject, color, "Piece-Rook-White-1", GetPositionFromSlice(new Vector2Int(0, 7), rookObject.transform.localScale.y), new Vector2Int(0, 7)))
+                    .AddItem(PieceInitializer(rookObject, color, "Piece-Rook-White-2", GetPositionFromSlice(new Vector2Int(7, 7), rookObject.transform.localScale.y), new Vector2Int(7, 7)))
+                    .AddItem(PieceInitializer(knightObject, color, "Piece-Knight-White-1", GetPositionFromSlice(new Vector2Int(1, 7), knightObject.transform.localScale.y), new Vector2Int(1, 7)))
+                    .AddItem(PieceInitializer(knightObject, color, "Piece-Knight-White-2", GetPositionFromSlice(new Vector2Int(6, 7), knightObject.transform.localScale.y), new Vector2Int(6, 7)))
+                    .AddItem(PieceInitializer(kingObject, color, "Piece-King-White-1", GetPositionFromSlice(new Vector2Int(3, 7), kingObject.transform.localScale.y), new Vector2Int(3, 7)))
+                    .AddItem(PieceInitializer(queenObject, color, "Piece-Queen-White-1", GetPositionFromSlice(new Vector2Int(4, 7), queenObject.transform.localScale.y), new Vector2Int(4, 7)))
                     .GetList();
                 for (var i = 1; i <= 8; i++)
                 {
                     var pawn = Instantiate(pawnObject);
-                    pawn.Initialize(color, "pawn-White-" + i, GetPositionFromSlice(new Vector2Int(i - 1, 6), pawn.transform.localScale.y));
+                    pawn.Initialize(color, "Piece-pawn-White-" + i, GetPositionFromSlice(new Vector2Int(i - 1, 6), pawn.transform.localScale.y), new Vector2Int(i - 1, 6));
                 }
             }
 
         }
 
-        private static Piece PieceInitializer(Piece piece, int color, string name, Vector3 pos)
+        private Piece PieceInitializer(Piece piece, int color, string pName, Vector3 pos, Vector2Int index)
         {
             var pieceObject = Instantiate(piece);
-            pieceObject.Initialize(color, name, pos);
+            pieceObject.Initialize(color, pName, pos, index);
+            SliceList[index.x, index.y].SetPieceName(pName);
             return pieceObject;
         }
 
@@ -130,6 +142,62 @@ namespace Scrpts.ObjectScripts
         {
             var slicePosition = SliceList[index.x, index.y].transform.position;
             return new Vector3(slicePosition.x, slicePosition.y + objectHeight * 0.5f, slicePosition.z);
+        }
+        
+
+        // Another method to detect which object is selected.
+        private void OnBoardClicked()
+        {
+            if (!Input.GetMouseButtonDown(0)) return;
+            _mousePosition = Input.mousePosition;
+            try {
+                var castPoint = Camera.main.ScreenPointToRay(_mousePosition);
+                if (!Physics.Raycast(castPoint, out var hit, Mathf.Infinity)) return;
+                var hitName = hit.collider.name;
+                if (hitName.Contains("Piece"))
+                {
+                    LogUtils.Log(hitName);
+                }
+
+                if (hitName.Contains("Slice"))
+                {
+                    LogUtils.Log("Slice:" + hitName);
+                }
+
+            }catch (Exception e) {
+                LogUtils.LogError(e.Message);
+            }
+        }
+
+        public Slice[,] GetSliceList()
+        {
+            return SliceList;
+        }
+
+        public void ChangeSliceState(Vector2Int index, int state)
+        {
+            switch (state)
+            {
+                case InitConfig.SLICE_STATE_NORMAL:
+                    SliceList[index.x, index.y].Normal();
+                    break;
+                case InitConfig.SLICE_STATE_SELECTED: 
+                    SliceList[index.x, index.y].Selected();
+                    break;
+                case InitConfig.SLICE_STATE_HIGHLIGHT: 
+                    SliceList[index.x, index.y].HighLight();
+                    break;
+                default:
+                        break;
+            }
+        }
+
+        public void MarkAvailableSlice(List<Vector2Int> mList)
+        {
+            foreach (var item in mList)
+            {
+                SliceList[item.x, item.y].Selected();
+            }
         }
     }
 }
