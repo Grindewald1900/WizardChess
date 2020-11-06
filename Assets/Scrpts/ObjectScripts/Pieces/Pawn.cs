@@ -7,7 +7,8 @@ namespace Scrpts.ObjectScripts.Pieces
 {
     public class Pawn : Piece
     {
-        private bool isFirstStep;
+        public bool isFirstStep;
+        // Player hold the pieces at the bottom of the board.
         // Start is called before the first frame update
         private void Start()
         {
@@ -19,7 +20,15 @@ namespace Scrpts.ObjectScripts.Pieces
         private void OnMouseDown()
         {
             var markList = new List<Vector2Int>();
-            markList.AddRange(_moveRules.Diagonal(GetIndex(), MoveStep));
+            // If the pawn doesn't touch the base line of its opponent, run the inner code below
+            if (!(isBlack && GetIndex().y == InitConfig.BOARD_SIZE - 1) && !(!isBlack && GetIndex().y == 0))
+            {
+                if (isFirstStep) {
+                    markList.AddRange(_moveRules.PawnFirst(GetIndex(), MoveStep, isBlack));
+                }else {
+                    markList.AddRange(_moveRules.Pawn(GetIndex(), MoveStep, isBlack));
+                }
+            }
             MouseClick(markList);
         }
         

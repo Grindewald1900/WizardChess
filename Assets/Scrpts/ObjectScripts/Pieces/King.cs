@@ -1,4 +1,5 @@
-﻿using Scrpts.RuleScripts;
+﻿using System.Collections.Generic;
+using Scrpts.RuleScripts;
 using UnityEngine;
 
 namespace Scrpts.ObjectScripts.Pieces
@@ -18,6 +19,15 @@ namespace Scrpts.ObjectScripts.Pieces
         private void OnDestroy()
         {
             
+        }
+        
+        private void OnMouseDown()
+        {
+            var markList = new List<Vector2Int>();
+            markList.AddRange(_moveRules.Diagonal(GetIndex(), MoveStep));
+            markList.AddRange(_moveRules.Horizontal(GetIndex(), MoveStep));
+            markList.AddRange(_moveRules.Vertical(GetIndex(), MoveStep));
+            MouseClick(markList);
         }
     }
 }

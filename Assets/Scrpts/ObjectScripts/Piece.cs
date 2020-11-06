@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using Scrpts.ObjectScripts.Pieces;
 using Scrpts.RuleScripts;
 using Scrpts.ToolScripts;
 using UnityEngine;
@@ -9,12 +10,15 @@ namespace Scrpts.ObjectScripts
 {
     public class Piece : MonoBehaviour
     {
+        // Position on the board(8*8)
         private Vector2Int Index;
         private int _score;
         protected int MoveStep;
         private Vector3 _position;
         protected int Status;
         protected MoveRules _moveRules;
+        // protected bool _isPlayer;
+        public bool isBlack;
 
 
         // Start is called before the first frame update
@@ -38,8 +42,14 @@ namespace Scrpts.ObjectScripts
         }
         public void MoveToSlice(Vector2Int index)
         {
+            if (gameObject.name.Contains("Pawn")) {
+                GameObject.Find(gameObject.name).GetComponent<Pawn>().isFirstStep = false;
+            }
+            Board.SharedInstance.SliceList[Index.x, Index.y].pieceName = "";
+            LogUtils.Log("Index" + Index);
             transform.position = Board.SharedInstance.SliceList[index.x, index.y].transform.position;
             SetIndex(index);
+            Board.SharedInstance.ClearAllMarkSlice();
         }
 
         public void SetIndex(Vector2Int index)
@@ -60,9 +70,11 @@ namespace Scrpts.ObjectScripts
         public void SetColor(int color)
         {
             if (color == 0) {
+                isBlack = true;
                 GetComponent<MeshRenderer>().materials[0].color = Color.red;
             }else
             {
+                isBlack = false;
                 GetComponent<MeshRenderer>().materials[0].color = Color.white;
             }
         }
@@ -106,11 +118,15 @@ namespace Scrpts.ObjectScripts
                     // Case3: Another Piece selected, then click on a highlighted piece
                     if (Board.SharedInstance.SliceList[GetIndex().x, GetIndex().y].status == InitConfig.STATE_HIGHLIGHT)
                     {
-                        //TODO Destroy this object
-                        gameObject.SetActive(false);
+
                         var p = GameObject.Find(Board.SharedInstance.selectedPiece).GetComponent<Piece>();
-                        p.MoveToSlice(GetIndex());
                         Board.SharedInstance.ClearAllMarkSlice();
+                        // Return if this is not opponent of the selected piece
+                        if(p.isBlack == isBlack) return;
+                        // Destroy this object
+                        p.MoveToSlice(GetIndex());
+                        gameObject.SetActive(false);
+
                     }
                     
                 }

@@ -1,4 +1,5 @@
-﻿using Scrpts.ToolScripts;
+﻿using System;
+using Scrpts.ToolScripts;
 using UnityEngine;
 
 namespace Scrpts.ObjectScripts
@@ -28,15 +29,24 @@ namespace Scrpts.ObjectScripts
         // Update is called once per frame
         private void Update()
         {
-            // if (Input.GetMouseButtonUp(0))
-            // {
-            //     HighLight();
-            // }
-            //
-            // if (Input.GetMouseButtonUp(1))
-            // {
-            //     Selected();
-            // }
+
+        }
+
+        private void OnMouseDown()
+        {
+            // If no piece selected, just return
+            if (string.IsNullOrEmpty(Board.SharedInstance.selectedPiece)) return;
+            // This slice has no piece on it and is highlight
+            if (status == InitConfig.STATE_HIGHLIGHT) {
+                if (!pieceName.Contains("Piece")) {     
+                    LogUtils.Log(gameObject.name);
+                    LogUtils.Log(pieceName);
+                    // Move the selected piece to this slice
+                    GameObject.Find(Board.SharedInstance.selectedPiece).GetComponent<Piece>().MoveToSlice(StringTools.GetSliceIndex(gameObject.name));
+                }
+            }else {
+                Board.SharedInstance.ClearAllMarkSlice();
+            }
         }
 
         public string GetPieceName()

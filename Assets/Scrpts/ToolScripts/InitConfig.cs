@@ -12,6 +12,7 @@ public class InitConfig : MonoBehaviour
     public const int STATE_NORMAL = 100;
     public const int STATE_SELECTED = 101;
     public const int STATE_HIGHLIGHT = 102;
+    public const int BOARD_SIZE = 8;
     private void Start()
     {
         LogUtils.SetMode(LogUtils.MODE_DEBUG);

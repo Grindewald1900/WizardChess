@@ -101,7 +101,7 @@ namespace Scrpts.ObjectScripts
                 for (var i = 1; i <= 8; i++)
                 {
                     blackPieceList.AddRange(new ListChain<Piece>()
-                        .AddItem(PieceInitializer(pawnObject, color, "Piece-pawn-Black-" + i, GetPositionFromSlice(new Vector2Int(i - 1, 1), pawnObject.transform.localScale.y), new Vector2Int(i - 1, 1)))
+                        .AddItem(PieceInitializer(pawnObject, color, "Piece-Pawn-Black-" + i, GetPositionFromSlice(new Vector2Int(i - 1, 1), pawnObject.transform.localScale.y), new Vector2Int(i - 1, 1)))
                         .GetList());
                     // var pawn = Instantiate(pawnObject);
                     // pawn.Initialize(color, "Piece-pawn-Black-" + i, GetPositionFromSlice(new Vector2Int(i - 1, 1), pawn.transform.localScale.y), new Vector2Int(i - 1, 1));
@@ -121,7 +121,7 @@ namespace Scrpts.ObjectScripts
                 for (var i = 1; i <= 8; i++)
                 {
                     whitePieceList.AddRange(new ListChain<Piece>()
-                        .AddItem(PieceInitializer(pawnObject, color, "Piece-pawn-White-" + i, GetPositionFromSlice(new Vector2Int(i - 1, 6), pawnObject.transform.localScale.y), new Vector2Int(i - 1, 6)))
+                        .AddItem(PieceInitializer(pawnObject, color, "Piece-Pawn-White-" + i, GetPositionFromSlice(new Vector2Int(i - 1, 6), pawnObject.transform.localScale.y), new Vector2Int(i - 1, 6)))
                         .GetList());
                     // var pawn = Instantiate(pawnObject);
                     // pawn.Initialize(color, "Piece-pawn-White-" + i, GetPositionFromSlice(new Vector2Int(i - 1, 6), pawn.transform.localScale.y), new Vector2Int(i - 1, 6));
