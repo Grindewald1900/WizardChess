@@ -9,6 +9,13 @@ namespace Scrpts.RuleScripts
     public class MoveRules
     {
         public MoveRules(){}
+        
+        /// <summary>
+        /// Return a list of vector2, which include all the slices available in the Diagonal lines
+        /// </summary>
+        /// <param name="index">The point of selected piece</param>
+        /// <param name="stride">The stride of the piece</param>
+        /// <returns>list of vector2</returns>
         public List<Vector2Int> Diagonal(Vector2Int index, int stride)
         {
             Slice[,] sliceList = Board.SharedInstance.GetSliceList();
@@ -19,23 +26,23 @@ namespace Scrpts.RuleScripts
             var br = 1;
             while (index.x - tl >= Math.Max(0, index.x - stride) && index.y + tl <= Math.Min(7, index.y + stride)) {
                 dList.Add(new Vector2Int(index.x - tl, index.y + tl));
-                LogUtils.Log(new Vector2Int(index.x - tl, index.y + tl));
-                if (sliceList[index.x - tl, index.y + tl].GetPieceName().Contains("Piece")) break;
+                // LogUtils.Log(sliceList[index.x - tl, index.y + tl].pieceName);
+                if (sliceList[index.x - tl, index.y + tl].pieceName.Contains("Piece")) break;
                 tl++;
             }
             while (index.x + tr <= Math.Min(7, index.x + stride) && index.y + tr <= Math.Min(7, index.y + stride)) {
                 dList.Add(new Vector2Int(index.x + tr, index.y + tr));
-                if (sliceList[index.x + tr, index.y + tr].GetPieceName().Contains("Piece")) break;
+                if (sliceList[index.x + tr, index.y + tr].pieceName.Contains("Piece")) break;
                 tr++;
             }
             while (index.x - bl >= Math.Max(0, index.x - stride) && index.y - bl >= Math.Max(0, index.y - stride)) {
                 dList.Add(new Vector2Int(index.x + bl, index.y + bl));
-                if (sliceList[index.x + bl, index.y + bl].GetPieceName().Contains("Piece")) break;
+                if (sliceList[index.x + bl, index.y + bl].pieceName.Contains("Piece")) break;
                 bl++;
             }
             while (index.x + br <= Math.Min(7, index.x + stride) && index.y - br >= Math.Max(0, index.y - stride)) {
                 dList.Add(new Vector2Int(index.x + br, index.y + br));
-                if (sliceList[index.x + br, index.y + br].GetPieceName().Contains("Piece")) break;
+                if (sliceList[index.x + br, index.y + br].pieceName.Contains("Piece")) break;
                 br++;
             }
             return dList;
@@ -55,12 +62,12 @@ namespace Scrpts.RuleScripts
             var sliceList = Board.SharedInstance.SliceList;
             while (l >= Math.Max(0, index.x - stride)) {
                 vList.Add(new Vector2Int(l, index.y));
-                if (sliceList[l, index.y].GetPieceName().Contains("Piece")) break;
+                if (sliceList[l, index.y].gameObject.name.Contains("Piece")) break;
                 l--;
             }
             while (r <= Math.Min(7, index.x + stride)) {
                 vList.Add(new Vector2Int(r, index.y));
-                if (sliceList[r, index.y].GetPieceName().Contains("Piece")) break;
+                if (sliceList[r, index.y].gameObject.name.Contains("Piece")) break;
                 r++;
             }
             return vList;
@@ -80,12 +87,12 @@ namespace Scrpts.RuleScripts
             var sliceList = Board.SharedInstance.SliceList;
             while (b >= Math.Max(0, index.y - stride)) {
                 hList.Add(new Vector2Int(index.x, b));
-                if (sliceList[index.x, b].GetPieceName().Contains("Piece")) break;
+                if (sliceList[index.x, b].gameObject.name.Contains("Piece")) break;
                 b--;
             }
             while (t <= Math.Min(7, index.y + stride)) {
                 hList.Add(new Vector2Int(index.x, t));
-                if (sliceList[index.x, t].GetPieceName().Contains("Piece")) break;
+                if (sliceList[index.x, t].gameObject.name.Contains("Piece")) break;
                 t++;
             }
             return hList;

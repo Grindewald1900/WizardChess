@@ -9,9 +9,9 @@ public class InitConfig : MonoBehaviour
     public static bool IsClickable;
     // Start is called before the first frame update
 
-    public const int SLICE_STATE_NORMAL = 100;
-    public const int SLICE_STATE_SELECTED = 101;
-    public const int SLICE_STATE_HIGHLIGHT = 102;
+    public const int STATE_NORMAL = 100;
+    public const int STATE_SELECTED = 101;
+    public const int STATE_HIGHLIGHT = 102;
     private void Start()
     {
         LogUtils.SetMode(LogUtils.MODE_DEBUG);

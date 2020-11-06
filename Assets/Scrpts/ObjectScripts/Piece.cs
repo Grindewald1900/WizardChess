@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Dynamic;
+using Scrpts.RuleScripts;
 using Scrpts.ToolScripts;
 using UnityEngine;
 
@@ -9,13 +11,15 @@ namespace Scrpts.ObjectScripts
     {
         private Vector2Int Index;
         private int _score;
-        private int _moveStep;
+        protected int MoveStep;
         private Vector3 _position;
+        protected int Status;
+        protected MoveRules _moveRules;
+
 
         // Start is called before the first frame update
         private void Start()
         {
-        
         }
 
         // Update is called once per frame
@@ -26,13 +30,16 @@ namespace Scrpts.ObjectScripts
 
         public void Initialize(int color, string objName, Vector3 pos, Vector2Int index)
         {
+            Status = InitConfig.STATE_NORMAL;
             SetColor(color);
             SetObjectName(objName);
             SetPosition(pos);
             SetIndex(index);
         }
-        protected void MoveToSlice(Vector3 pos)
+        public void MoveToSlice(Vector2Int index)
         {
+            transform.position = Board.SharedInstance.SliceList[index.x, index.y].transform.position;
+            SetIndex(index);
         }
 
         public void SetIndex(Vector2Int index)
@@ -63,6 +70,57 @@ namespace Scrpts.ObjectScripts
         public void SetObjectName(string name)
         {
             gameObject.name = "Piece-" + name;
+        }
+
+        // Deal with mouse click event
+        protected void MouseClick(List<Vector2Int> markList)
+        {
+              // When animation is ongoing, pieces are not clickable
+            if(!InitConfig.IsClickable) return;
+            
+            // Status = Status == InitConfig.STATE_NORMAL ? InitConfig.STATE_SELECTED : InitConfig.STATE_NORMAL;
+            LogUtils.Log("Bishop");
+            LogUtils.Log(Board.SharedInstance.selectedPiece);
+
+            // Case1: No piece selected
+            if (!Board.SharedInstance.selectedPiece.Contains("Piece"))
+            {
+                Status = InitConfig.STATE_SELECTED;
+                Board.SharedInstance.selectedPiece = gameObject.name;
+                Board.SharedInstance.ChangeSliceState(GetIndex(), InitConfig.STATE_SELECTED);
+                Board.SharedInstance.MarkAvailableSlice(markList);
+            }
+            // Piece selected
+            else
+            {
+                LogUtils.Log("Piece Status:" + Status);
+                LogUtils.Log("Slice Status:" + Board.SharedInstance.SliceList[GetIndex().x, GetIndex().y].status);
+
+                if (Status == InitConfig.STATE_NORMAL)
+                {
+                    // Case2: Another Piece selected, then click on a normal piece(not highlighted)
+                    if (Board.SharedInstance.SliceList[GetIndex().x, GetIndex().y].status == InitConfig.STATE_NORMAL)
+                    {
+                        Board.SharedInstance.ClearAllMarkSlice();
+                    }
+                    // Case3: Another Piece selected, then click on a highlighted piece
+                    if (Board.SharedInstance.SliceList[GetIndex().x, GetIndex().y].status == InitConfig.STATE_HIGHLIGHT)
+                    {
+                        //TODO Destroy this object
+                        gameObject.SetActive(false);
+                        var p = GameObject.Find(Board.SharedInstance.selectedPiece).GetComponent<Piece>();
+                        p.MoveToSlice(GetIndex());
+                        Board.SharedInstance.ClearAllMarkSlice();
+                    }
+                    
+                }
+                // Case4: Piece selected, then click on the same piece
+                if (Status == InitConfig.STATE_SELECTED)
+                {
+                    Status = InitConfig.STATE_NORMAL;
+                    Board.SharedInstance.ClearAllMarkSlice();
+                }
+            }
         }
 
         private void ChangeAnimationState(int state)

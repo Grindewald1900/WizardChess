@@ -1,17 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Scrpts.RuleScripts;
 using UnityEngine;
 
 namespace Scrpts.ObjectScripts.Pieces
 {
     public class Rook : Piece
     {
-        private int _moveStep;
 
         // Start is called before the first frame update
         private void Start()
         {
-            _moveStep = 1;
+            MoveStep = 1;
+            _moveRules = new MoveRules();
         }
         
     }

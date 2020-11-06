@@ -12,6 +12,7 @@ namespace Scrpts.ObjectScripts
     {
         public static Board SharedInstance;
         public Slice[,] SliceList;
+        public string selectedPiece;
         public List<Piece> blackPieceList;
         public List<Piece> whitePieceList;
         public Slice slice;
@@ -99,8 +100,11 @@ namespace Scrpts.ObjectScripts
                     .GetList();
                 for (var i = 1; i <= 8; i++)
                 {
-                    var pawn = Instantiate(pawnObject);
-                    pawn.Initialize(color, "Piece-pawn-Black-" + i, GetPositionFromSlice(new Vector2Int(i - 1, 1), pawn.transform.localScale.y), new Vector2Int(i - 1, 1));
+                    blackPieceList.AddRange(new ListChain<Piece>()
+                        .AddItem(PieceInitializer(pawnObject, color, "Piece-pawn-Black-" + i, GetPositionFromSlice(new Vector2Int(i - 1, 1), pawnObject.transform.localScale.y), new Vector2Int(i - 1, 1)))
+                        .GetList());
+                    // var pawn = Instantiate(pawnObject);
+                    // pawn.Initialize(color, "Piece-pawn-Black-" + i, GetPositionFromSlice(new Vector2Int(i - 1, 1), pawn.transform.localScale.y), new Vector2Int(i - 1, 1));
                 }
             }
             else {
@@ -116,8 +120,12 @@ namespace Scrpts.ObjectScripts
                     .GetList();
                 for (var i = 1; i <= 8; i++)
                 {
-                    var pawn = Instantiate(pawnObject);
-                    pawn.Initialize(color, "Piece-pawn-White-" + i, GetPositionFromSlice(new Vector2Int(i - 1, 6), pawn.transform.localScale.y), new Vector2Int(i - 1, 6));
+                    whitePieceList.AddRange(new ListChain<Piece>()
+                        .AddItem(PieceInitializer(pawnObject, color, "Piece-pawn-White-" + i, GetPositionFromSlice(new Vector2Int(i - 1, 6), pawnObject.transform.localScale.y), new Vector2Int(i - 1, 6)))
+                        .GetList());
+                    // var pawn = Instantiate(pawnObject);
+                    // pawn.Initialize(color, "Piece-pawn-White-" + i, GetPositionFromSlice(new Vector2Int(i - 1, 6), pawn.transform.localScale.y), new Vector2Int(i - 1, 6));
+                    // SliceList[i - 1, 6].SetPieceName();
                 }
             }
 
@@ -178,13 +186,13 @@ namespace Scrpts.ObjectScripts
         {
             switch (state)
             {
-                case InitConfig.SLICE_STATE_NORMAL:
+                case InitConfig.STATE_NORMAL:
                     SliceList[index.x, index.y].Normal();
                     break;
-                case InitConfig.SLICE_STATE_SELECTED: 
+                case InitConfig.STATE_SELECTED: 
                     SliceList[index.x, index.y].Selected();
                     break;
-                case InitConfig.SLICE_STATE_HIGHLIGHT: 
+                case InitConfig.STATE_HIGHLIGHT: 
                     SliceList[index.x, index.y].HighLight();
                     break;
                 default:
@@ -196,7 +204,16 @@ namespace Scrpts.ObjectScripts
         {
             foreach (var item in mList)
             {
-                SliceList[item.x, item.y].Selected();
+                SliceList[item.x, item.y].HighLight();
+            }
+        }
+
+        public void ClearAllMarkSlice()
+        {
+            selectedPiece = "";
+            foreach (var item in SliceList)
+            {
+                item.Normal();
             }
         }
     }

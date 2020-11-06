@@ -10,7 +10,8 @@ namespace Scrpts.ObjectScripts
         public Material TextureSelected;
         private Material[] _materials;
         private Material[] _renderMaterials;
-        private string _pieceName;
+        public string pieceName;
+        public int status;
 
         // Start is called before the first frame update
         private void Start()
@@ -40,36 +41,37 @@ namespace Scrpts.ObjectScripts
 
         public string GetPieceName()
         {
-            return _pieceName;
+            return pieceName;
         }
         public void SetPieceName(string pName)
         {
-            _pieceName = pName;
+            pieceName = pName;
         }
         public void HighLight()
         {
             _renderMaterials[0].color = Color.yellow;
+            status = InitConfig.STATE_HIGHLIGHT;
         }
 
         public void Selected()
         {
             _renderMaterials[0].color = Color.red;
+            status = InitConfig.STATE_SELECTED;
         }
 
         public void Normal()
         {
-            _renderMaterials[0].color = Color.white;
+            // Name of the Slice contains two number, which represents the index of col and row.
+            // If sum of col and row equals is divisible by 2, it is a black slice, otherwise white. 
+            // e.g Piece-1-3
+            _renderMaterials[0].color = StringTools.GetPieceNums(gameObject.name)%2 == 0 ? Color.black : Color.white;
+            status = InitConfig.STATE_NORMAL;
         }
         
         // Set color when a slice is initialized
         public void SetColor(int color)
         {
-            if (color == 0) {
-                GetComponent<MeshRenderer>().materials[0].color = Color.black;
-            }else
-            {
-                GetComponent<MeshRenderer>().materials[0].color = Color.white;
-            }
+            GetComponent<MeshRenderer>().materials[0].color = color == 0 ? Color.black : Color.white;
         }
     }
 }
