@@ -45,6 +45,9 @@ namespace Scrpts.ObjectScripts
             if (gameObject.name.Contains("Pawn")) {
                 GameObject.Find(gameObject.name).GetComponent<Pawn>().isFirstStep = false;
             }
+            InitConfig.IsPlayerTurn = !gameObject.name.Contains("Black");
+            // TODO unfinished
+            LogUtils.Log(InitConfig.IsPlayerTurn);
             Board.SharedInstance.SliceList[Index.x, Index.y].pieceName = "";
             LogUtils.Log("Index" + Index);
             transform.position = Board.SharedInstance.SliceList[index.x, index.y].transform.position;

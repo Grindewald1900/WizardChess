@@ -7,12 +7,16 @@ public class InitConfig : MonoBehaviour
 {
     // When pieces animation is ongoing, other pieces are unclickable
     public static bool IsClickable;
-    // Start is called before the first frame update
+    // Player and AI move their pieces in turn
+    public static bool IsPlayerTurn;
 
     public const int STATE_NORMAL = 100;
     public const int STATE_SELECTED = 101;
     public const int STATE_HIGHLIGHT = 102;
     public const int BOARD_SIZE = 8;
+    
+    // Start is called before the first frame update
+
     private void Start()
     {
         LogUtils.SetMode(LogUtils.MODE_DEBUG);

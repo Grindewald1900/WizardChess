@@ -131,6 +131,15 @@ namespace Scrpts.ObjectScripts
 
         }
 
+        /// <summary>
+        /// Instantiate a certain piece with parameters
+        /// </summary>
+        /// <param name="piece">piece object to be instantiated</param>
+        /// <param name="color">piece color</param>
+        /// <param name="pName">reset piece name e.g. Piece-Pawn-White-1 </param>
+        /// <param name="pos">initial position</param>
+        /// <param name="index">index of the slice that the piece stand on</param>
+        /// <returns></returns>
         private Piece PieceInitializer(Piece piece, int color, string pName, Vector3 pos, Vector2Int index)
         {
             var pieceObject = Instantiate(piece);
@@ -182,6 +191,11 @@ namespace Scrpts.ObjectScripts
             return SliceList;
         }
 
+        /// <summary>
+        /// Change Slice state
+        /// </summary>
+        /// <param name="index">The index of slice</param>
+        /// <param name="state">Target State</param>
         public void ChangeSliceState(Vector2Int index, int state)
         {
             switch (state)
@@ -200,6 +214,7 @@ namespace Scrpts.ObjectScripts
             }
         }
 
+        // Highlight all the available slice when a certain piece is selected
         public void MarkAvailableSlice(List<Vector2Int> mList)
         {
             foreach (var item in mList)
@@ -208,6 +223,7 @@ namespace Scrpts.ObjectScripts
             }
         }
 
+        // Reset all slices state to normal
         public void ClearAllMarkSlice()
         {
             selectedPiece = "";

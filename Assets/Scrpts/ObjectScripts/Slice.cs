@@ -53,22 +53,26 @@ namespace Scrpts.ObjectScripts
         {
             return pieceName;
         }
+        
         public void SetPieceName(string pName)
         {
             pieceName = pName;
         }
+        // Set the slice state to Highlight
         public void HighLight()
         {
             _renderMaterials[0].color = Color.yellow;
             status = InitConfig.STATE_HIGHLIGHT;
         }
 
+        // Set the slice state to Selected
         public void Selected()
         {
             _renderMaterials[0].color = Color.red;
             status = InitConfig.STATE_SELECTED;
         }
 
+        // Set the slice state to Normal
         public void Normal()
         {
             // Name of the Slice contains two number, which represents the index of col and row.
