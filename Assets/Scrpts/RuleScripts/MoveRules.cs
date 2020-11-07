@@ -106,10 +106,14 @@ namespace Scrpts.RuleScripts
         /// <returns>list of vector2</returns>
         public List<Vector2Int> PawnFirst(Vector2Int index, int stride, bool isPlayer)
         {
+            // Todo: Merge this two functions PawnFirst and Pawn
             var pList = new List<Vector2Int>();
-            for (var i = 1; i <= 2; i++) {
-                pList.Add(isPlayer ? new Vector2Int(index.x, index.y + i) : new Vector2Int(index.x, index.y - i));
-            }
+            pList = isPlayer ? PawnDetail(pList, index.x, index.y + 1) : PawnDetail(pList, index.x, index.y - 1);
+            pList.Add(isPlayer ? new Vector2Int(index.x, index.y + 2) : new Vector2Int(index.x, index.y - 2));
+
+            // for (var i = 1; i <= 2; i++) {
+            //     pList.Add(isPlayer ? new Vector2Int(index.x, index.y + i) : new Vector2Int(index.x, index.y - i));
+            // }
             return pList;
         }
 

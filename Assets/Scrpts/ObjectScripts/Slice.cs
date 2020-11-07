@@ -12,7 +12,7 @@ namespace Scrpts.ObjectScripts
         private Material[] _materials;
         private Material[] _renderMaterials;
         public string pieceName;
-        public int status;
+        public int status; 
 
         // Start is called before the first frame update
         private void Start()

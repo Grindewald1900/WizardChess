@@ -24,6 +24,7 @@ namespace Scrpts.ObjectScripts
         // Start is called before the first frame update
         private void Start()
         {
+            
         }
 
         // Update is called once per frame
@@ -40,18 +41,23 @@ namespace Scrpts.ObjectScripts
             SetPosition(pos);
             SetIndex(index);
         }
-        public void MoveToSlice(Vector2Int index)
+        
+        // Move this piece from A to B
+        public void MoveToSlice(Vector2Int toIndex)
         {
             if (gameObject.name.Contains("Pawn")) {
                 GameObject.Find(gameObject.name).GetComponent<Pawn>().isFirstStep = false;
             }
             InitConfig.IsPlayerTurn = !gameObject.name.Contains("Black");
             // TODO unfinished
+            Board.SharedInstance.EditScore(0,0);
             LogUtils.Log(InitConfig.IsPlayerTurn);
+            // Reset origin slice piece-name 
             Board.SharedInstance.SliceList[Index.x, Index.y].pieceName = "";
-            LogUtils.Log("Index" + Index);
-            transform.position = Board.SharedInstance.SliceList[index.x, index.y].transform.position;
-            SetIndex(index);
+            // Set destination slice piece-name 
+            Board.SharedInstance.SliceList[toIndex.x, toIndex.y].pieceName = gameObject.name;
+            transform.position = Board.SharedInstance.SliceList[toIndex.x, toIndex.y].transform.position;
+            SetIndex(toIndex);
             Board.SharedInstance.ClearAllMarkSlice();
         }
 
@@ -100,6 +106,7 @@ namespace Scrpts.ObjectScripts
             // Case1: No piece selected
             if (!Board.SharedInstance.selectedPiece.Contains("Piece"))
             {
+                if(isBlack != InitConfig.IsPlayerTurn) return;
                 Status = InitConfig.STATE_SELECTED;
                 Board.SharedInstance.selectedPiece = gameObject.name;
                 Board.SharedInstance.ChangeSliceState(GetIndex(), InitConfig.STATE_SELECTED);

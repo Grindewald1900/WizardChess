@@ -5,6 +5,8 @@ using Scrpts.ObjectScripts.Pieces;
 using Scrpts.RuleScripts;
 using Scrpts.ToolScripts;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UI;
 
 namespace Scrpts.ObjectScripts
 {
@@ -16,6 +18,10 @@ namespace Scrpts.ObjectScripts
         public List<Piece> blackPieceList;
         public List<Piece> whitePieceList;
         public Slice slice;
+        // public Canvas scoreCanvas;
+        public Text scoreText;
+        public Text hintText;
+
 
         public Bishop bishopObject;
         public Rook rookObject;
@@ -37,6 +43,7 @@ namespace Scrpts.ObjectScripts
             _boardHeight = 0.5f * transform.localScale.y;
             _boardSize = transform.localScale.x;
             _pieceSize = 1f;
+            InitConfig.IsPlayerTurn = true;
             InitSlices();
             InitPieces(0);
             InitPieces(1);
@@ -231,6 +238,12 @@ namespace Scrpts.ObjectScripts
             {
                 item.Normal();
             }
+        }
+
+        public void EditScore(int pScore, int aiScore)
+        {
+            scoreText.text = "Score: " + pScore + " - " + aiScore;
+            hintText.text = InitConfig.IsPlayerTurn ? "Your turn" : "AI turn";
         }
     }
 }
