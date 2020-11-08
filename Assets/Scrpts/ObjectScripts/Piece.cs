@@ -47,7 +47,7 @@ namespace Scrpts.ObjectScripts
             }
             if (Board.SharedInstance.SliceList[toIndex.x, toIndex.y].pieceName != "")
             {
-                Piece piece = GameObject.Find(Board.SharedInstance.SliceList[toIndex.x, toIndex.y].pieceName).GetComponent<Piece>();
+                var piece = GameObject.Find(Board.SharedInstance.SliceList[toIndex.x, toIndex.y].pieceName).GetComponent<Piece>();
                 piece.gameObject.SetActive(false);
                 if (piece.isBlack)
                 {
@@ -62,7 +62,8 @@ namespace Scrpts.ObjectScripts
             Board.SharedInstance.SliceList[Index.x, Index.y].pieceName = "";
             // Set destination slice piece-name 
             Board.SharedInstance.SliceList[toIndex.x, toIndex.y].pieceName = gameObject.name;
-            transform.position = Board.SharedInstance.SliceList[toIndex.x, toIndex.y].transform.position;
+            Board.SharedInstance.EditRecord(gameObject.name, GetIndex(), toIndex);
+            transform.position = Board.SharedInstance.SliceList[toIndex.x, toIndex.y].transform.position + new Vector3(0, transform.localScale.y * 0.5f,0);
             SetIndex(toIndex);
             Board.SharedInstance.ClearAllMarkSlice();
             

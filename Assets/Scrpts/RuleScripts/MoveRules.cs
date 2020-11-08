@@ -187,7 +187,7 @@ namespace Scrpts.RuleScripts
         {
             var  pList = new List<Vector2Int>();
             var p = isPlayer ? 1 : -1;
-            pList = isPlayer ? PawnDetail(pList, index.x, index.y + 1) : PawnDetail(pList, index.x, index.y - 1);
+            pList = isPlayer ? PawnDetail(pList, index.x, index.y + 1, isPlayer) : PawnDetail(pList, index.x, index.y - 1, isPlayer);
             if (!isFirst) return pList;
             // If first time, if slice[x, y+1] is not empty or slice[x, y+2] has the same color, slice[x, y+2] won't be added to list
             if (Board.SharedInstance.SliceList[index.x, index.y + (isPlayer ? 1 : -1)].pieceName != "" 
@@ -205,7 +205,7 @@ namespace Scrpts.RuleScripts
         /// <param name="indexX">The X index for the selected pawn</param>
         /// <param name="indexY">The Y index of the row in front of the selected pawn</param>
         /// <returns>list of vector2</returns>
-        private List<Vector2Int> PawnDetail(List<Vector2Int> list, int indexX, int indexY)
+        private List<Vector2Int> PawnDetail(List<Vector2Int> list, int indexX, int indexY, bool isPlayer)
         {
             for (var i = 0; i < InitConfig.BOARD_SIZE; i++)
             {
@@ -213,7 +213,10 @@ namespace Scrpts.RuleScripts
                 {
                     list.Add(new Vector2Int(i, indexY));
                 }
-                if (Math.Abs(i - indexX) == 1 && !string.IsNullOrEmpty(Board.SharedInstance.SliceList[i, indexY].pieceName))
+
+                if (Math.Abs(i - indexX) != 1 ||
+                    string.IsNullOrEmpty(Board.SharedInstance.SliceList[i, indexY].pieceName)) continue;
+                if (!StringTools.ComparePieceColor(Board.SharedInstance.SliceList[i, indexY].pieceName, isPlayer))
                 {
                     list.Add(new Vector2Int(i, indexY));
                 }

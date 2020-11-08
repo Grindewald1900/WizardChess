@@ -23,6 +23,7 @@ namespace Scrpts.ObjectScripts
         // public Canvas scoreCanvas;
         public Text scoreText;
         public Text hintText;
+        public Text recordText;
 
         public Bishop bishopObject;
         public Rook rookObject;
@@ -34,6 +35,7 @@ namespace Scrpts.ObjectScripts
         private float _boardHeight;
         private float _boardSize;
         private float _pieceSize;
+        private string _record;
 
         private Vector3 _mousePosition;
         
@@ -258,6 +260,12 @@ namespace Scrpts.ObjectScripts
             aiScore += aScore;
             scoreText.text = "Score: " + playerScore + " - " + aiScore;
             hintText.text = InitConfig.IsPlayerTurn ? "Your turn" : "AI turn";
+        }
+
+        public void EditRecord(string pName, Vector2Int fromIndex, Vector2Int toIndex)
+        {
+            _record += "\n" + pName + ": Move from " + fromIndex + " To " + toIndex;
+            recordText.text = _record;
         }
 
         // public void AutoPlay()
