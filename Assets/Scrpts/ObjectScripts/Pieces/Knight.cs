@@ -13,12 +13,13 @@ namespace Scrpts.ObjectScripts.Pieces
         {
             MoveStep = 1;
             _moveRules = new MoveRules();
+            pieceScore = isBlack ? InitConfig.SCORE_KNIGHT : InitConfig.SCORE_KNIGHT * -1;
         }
         
         private void OnMouseDown()
         {
             var markList = new List<Vector2Int>();
-            markList.AddRange(_moveRules.Knight(GetIndex()));
+            markList.AddRange(_moveRules.Knight(GetIndex(), isBlack));
             MouseClick(markList);
         }
     }

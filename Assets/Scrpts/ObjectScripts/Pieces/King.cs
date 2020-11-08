@@ -12,7 +12,7 @@ namespace Scrpts.ObjectScripts.Pieces
         {
             MoveStep = 1;
             _moveRules = new MoveRules();
-
+            pieceScore = isBlack ? InitConfig.SCORE_KING : InitConfig.SCORE_KING * -1;
         }
         
         // Game lose
@@ -24,9 +24,9 @@ namespace Scrpts.ObjectScripts.Pieces
         private void OnMouseDown()
         {
             var markList = new List<Vector2Int>();
-            markList.AddRange(_moveRules.Diagonal(GetIndex(), MoveStep));
-            markList.AddRange(_moveRules.Horizontal(GetIndex(), MoveStep));
-            markList.AddRange(_moveRules.Vertical(GetIndex(), MoveStep));
+            markList.AddRange(_moveRules.Diagonal(GetIndex(), MoveStep, isBlack));
+            markList.AddRange(_moveRules.Horizontal(GetIndex(), MoveStep, isBlack));
+            markList.AddRange(_moveRules.Vertical(GetIndex(), MoveStep, isBlack));
             MouseClick(markList);
         }
     }

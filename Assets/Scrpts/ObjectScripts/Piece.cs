@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using Scrpts.ObjectScripts.Pieces;
@@ -12,20 +13,14 @@ namespace Scrpts.ObjectScripts
     {
         // Position on the board(8*8)
         private Vector2Int Index;
-        private int _score;
         protected int MoveStep;
         private Vector3 _position;
         protected int Status;
         protected MoveRules _moveRules;
         // protected bool _isPlayer;
         public bool isBlack;
-
-
-        // Start is called before the first frame update
-        private void Start()
-        {
-            
-        }
+        public int pieceScore;
+        
 
         // Update is called once per frame
         private void Update()
@@ -45,13 +40,24 @@ namespace Scrpts.ObjectScripts
         // Move this piece from A to B
         public void MoveToSlice(Vector2Int toIndex)
         {
-            if (gameObject.name.Contains("Pawn")) {
+            InitConfig.IsPlayerTurn = !gameObject.name.Contains("Black");
+            // If the pawn is moved for the first time, set isFirstStep to false
+            if (gameObject.name.Contains("Pawn") && GameObject.Find(gameObject.name).GetComponent<Pawn>().isFirstStep) {
                 GameObject.Find(gameObject.name).GetComponent<Pawn>().isFirstStep = false;
             }
-            InitConfig.IsPlayerTurn = !gameObject.name.Contains("Black");
-            // TODO unfinished
-            Board.SharedInstance.EditScore(0,0);
-            LogUtils.Log(InitConfig.IsPlayerTurn);
+            if (Board.SharedInstance.SliceList[toIndex.x, toIndex.y].pieceName != "")
+            {
+                Piece piece = GameObject.Find(Board.SharedInstance.SliceList[toIndex.x, toIndex.y].pieceName).GetComponent<Piece>();
+                piece.gameObject.SetActive(false);
+                if (piece.isBlack)
+                {
+                    Board.SharedInstance.blackPieceList.Remove(piece);
+                }
+                else
+                {
+                    Board.SharedInstance.whitePieceList.Remove(piece);
+                }
+            }
             // Reset origin slice piece-name 
             Board.SharedInstance.SliceList[Index.x, Index.y].pieceName = "";
             // Set destination slice piece-name 
@@ -59,8 +65,31 @@ namespace Scrpts.ObjectScripts
             transform.position = Board.SharedInstance.SliceList[toIndex.x, toIndex.y].transform.position;
             SetIndex(toIndex);
             Board.SharedInstance.ClearAllMarkSlice();
+            
+            if (!InitConfig.IsPlayerTurn)
+            {
+                StartCoroutine(AutoPlay());
+            }
         }
 
+        IEnumerator AutoPlay()
+        {
+            // Wait for 1 sec
+            yield return new WaitForSeconds(1);
+            switch (InitConfig.AI_TYPE)
+            {
+                case InitConfig.AI_MINIMAX_LOOP:
+                    var minimax = new MiniMaxLoop(InitConfig.IsPlayerTurn);
+                    minimax.AutoPlay();
+                    break;
+                case InitConfig.AI_MINIMAX_ALPHA_BETA:
+                    break;
+                case InitConfig.AI_RANDOM:
+                    break;
+                default:
+                    break;
+            }
+        }
         public void SetIndex(Vector2Int index)
         {
             Index = index;
@@ -90,7 +119,7 @@ namespace Scrpts.ObjectScripts
 
         public void SetObjectName(string name)
         {
-            gameObject.name = "Piece-" + name;
+            gameObject.name = name;
         }
 
         // Deal with mouse click event
@@ -98,11 +127,8 @@ namespace Scrpts.ObjectScripts
         {
               // When animation is ongoing, pieces are not clickable
             if(!InitConfig.IsClickable) return;
-            
             // Status = Status == InitConfig.STATE_NORMAL ? InitConfig.STATE_SELECTED : InitConfig.STATE_NORMAL;
-            LogUtils.Log("Bishop");
-            LogUtils.Log(Board.SharedInstance.selectedPiece);
-
+            
             // Case1: No piece selected
             if (!Board.SharedInstance.selectedPiece.Contains("Piece"))
             {
@@ -115,9 +141,6 @@ namespace Scrpts.ObjectScripts
             // Piece selected
             else
             {
-                LogUtils.Log("Piece Status:" + Status);
-                LogUtils.Log("Slice Status:" + Board.SharedInstance.SliceList[GetIndex().x, GetIndex().y].status);
-
                 if (Status == InitConfig.STATE_NORMAL)
                 {
                     // Case2: Another Piece selected, then click on a normal piece(not highlighted)

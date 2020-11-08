@@ -15,6 +15,8 @@ namespace Scrpts.ObjectScripts.Pieces
             MoveStep = 1;
             isFirstStep = true;
             _moveRules = new MoveRules();
+            pieceScore = isBlack ? InitConfig.SCORE_PAWN : InitConfig.SCORE_PAWN * -1;
+
         }
         
         private void OnMouseDown()
@@ -24,9 +26,9 @@ namespace Scrpts.ObjectScripts.Pieces
             if (!(isBlack && GetIndex().y == InitConfig.BOARD_SIZE - 1) && !(!isBlack && GetIndex().y == 0))
             {
                 if (isFirstStep) {
-                    markList.AddRange(_moveRules.PawnFirst(GetIndex(), MoveStep, isBlack));
+                    markList.AddRange(_moveRules.Pawn(GetIndex(), MoveStep, isBlack, true));
                 }else {
-                    markList.AddRange(_moveRules.Pawn(GetIndex(), MoveStep, isBlack));
+                    markList.AddRange(_moveRules.Pawn(GetIndex(), MoveStep, isBlack, false));
                 }
             }
             MouseClick(markList);

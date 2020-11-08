@@ -15,13 +15,14 @@ namespace Scrpts.ObjectScripts
         public static Board SharedInstance;
         public Slice[,] SliceList;
         public string selectedPiece;
+        public int playerScore;
+        public int aiScore;
         public List<Piece> blackPieceList;
         public List<Piece> whitePieceList;
         public Slice slice;
         // public Canvas scoreCanvas;
         public Text scoreText;
         public Text hintText;
-
 
         public Bishop bishopObject;
         public Rook rookObject;
@@ -43,7 +44,10 @@ namespace Scrpts.ObjectScripts
             _boardHeight = 0.5f * transform.localScale.y;
             _boardSize = transform.localScale.x;
             _pieceSize = 1f;
+            playerScore = 0;
+            aiScore = 0;
             InitConfig.IsPlayerTurn = true;
+            InitConfig.AI_TYPE = InitConfig.AI_MINIMAX_LOOP;
             InitSlices();
             InitPieces(0);
             InitPieces(1);
@@ -52,6 +56,11 @@ namespace Scrpts.ObjectScripts
         private void Update()
         {
             // OnBoardClicked();
+        }
+
+        private void FixedUpdate()
+        {
+            
         }
 
 
@@ -240,10 +249,29 @@ namespace Scrpts.ObjectScripts
             }
         }
 
-        public void EditScore(int pScore, int aiScore)
+        // Edit score board and hint on the screen
+        // e.g. Score: 50 - 150
+        // e.g. "Your turn"
+        public void EditScore(int pScore, int aScore)
         {
-            scoreText.text = "Score: " + pScore + " - " + aiScore;
+            playerScore += pScore;
+            aiScore += aScore;
+            scoreText.text = "Score: " + playerScore + " - " + aiScore;
             hintText.text = InitConfig.IsPlayerTurn ? "Your turn" : "AI turn";
         }
+
+        // public void AutoPlay()
+        // {
+        //     if(InitConfig.IsPlayerTurn) return;
+        //     var maxLoop = new MiniMaxLoop(InitConfig.IsPlayerTurn);
+        //     maxLoop.AutoPlay();
+        // }
+        
+        
+        // Get total score 
+        // public int GetTotalScore()
+        // {
+        //     
+        // }
     }
 }

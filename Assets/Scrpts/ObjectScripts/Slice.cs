@@ -39,8 +39,6 @@ namespace Scrpts.ObjectScripts
             // This slice has no piece on it and is highlight
             if (status == InitConfig.STATE_HIGHLIGHT) {
                 if (!pieceName.Contains("Piece")) {     
-                    LogUtils.Log(gameObject.name);
-                    LogUtils.Log(pieceName);
                     // Move the selected piece to this slice
                     GameObject.Find(Board.SharedInstance.selectedPiece).GetComponent<Piece>().MoveToSlice(StringTools.GetSliceIndex(gameObject.name));
                 }
@@ -78,7 +76,7 @@ namespace Scrpts.ObjectScripts
             // Name of the Slice contains two number, which represents the index of col and row.
             // If sum of col and row equals is divisible by 2, it is a black slice, otherwise white. 
             // e.g Piece-1-3
-            _renderMaterials[0].color = StringTools.GetPieceNums(gameObject.name)%2 == 0 ? Color.black : Color.white;
+            _renderMaterials[0].color = StringTools.GetSliceNums(gameObject.name)%2 == 0 ? Color.black : Color.white;
             status = InitConfig.STATE_NORMAL;
         }
         
