@@ -29,5 +29,15 @@ namespace Scrpts.ObjectScripts.Pieces
             markList.AddRange(_moveRules.Vertical(GetIndex(), MoveStep, isBlack));
             MouseClick(markList);
         }
+        
+        public void OnClicked()
+        {
+            Debug.Log("King Clicked");
+            var markList = new List<Vector2Int>();
+            markList.AddRange(_moveRules.Diagonal(GetIndex(), MoveStep, isBlack));
+            markList.AddRange(_moveRules.Horizontal(GetIndex(), MoveStep, isBlack));
+            markList.AddRange(_moveRules.Vertical(GetIndex(), MoveStep, isBlack));
+            MouseClick(markList);
+        }
     }
 }

@@ -34,6 +34,22 @@ namespace Scrpts.ObjectScripts.Pieces
             MouseClick(markList);
         }
         
+        public void OnClicked()
+        {
+            Debug.Log("Pawn Clicked");
+            var markList = new List<Vector2Int>();
+            // If the pawn doesn't touch the base line of its opponent, run the inner code below
+            if (!(isBlack && GetIndex().y == InitConfig.BOARD_SIZE - 1) && !(!isBlack && GetIndex().y == 0))
+            {
+                if (isFirstStep) {
+                    markList.AddRange(_moveRules.Pawn(GetIndex(), MoveStep, isBlack, true));
+                }else {
+                    markList.AddRange(_moveRules.Pawn(GetIndex(), MoveStep, isBlack, false));
+                }
+            }
+            MouseClick(markList);
+        }
+        
     }
 }
 

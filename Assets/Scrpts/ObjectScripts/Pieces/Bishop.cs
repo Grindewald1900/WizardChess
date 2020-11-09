@@ -22,6 +22,15 @@ namespace Scrpts.ObjectScripts.Pieces
         
         private void OnMouseDown()
         {
+            Debug.Log("Bishop Clicked");
+            var markList = new List<Vector2Int>();
+            markList.AddRange(_moveRules.Diagonal(GetIndex(), MoveStep, isBlack));
+            MouseClick(markList);
+        }
+
+        public void OnClicked()
+        {
+            Debug.Log("Bishop Clicked");
             var markList = new List<Vector2Int>();
             markList.AddRange(_moveRules.Diagonal(GetIndex(), MoveStep, isBlack));
             MouseClick(markList);

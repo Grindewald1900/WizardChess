@@ -54,6 +54,11 @@ namespace Scrpts.ObjectScripts
             InitSlices();
             InitPieces(0);
             InitPieces(1);
+            LogUtils.Log("Is Dual:" + InitConfig.DUAL_AI);
+            if (InitConfig.DUAL_AI)
+            {
+                GameObject.Find("Piece-Pawn-Black-2").GetComponent<Piece>().MoveToSlice(new Vector2Int(1,3));
+            }
         }
 
         private void Update()
@@ -108,14 +113,14 @@ namespace Scrpts.ObjectScripts
         {
             if (color == 0) {
                 blackPieceList = new ListChain<Piece>()
-                    .AddItem(PieceInitializer(bishopObject, color, "Piece-Bishop-Black-1", GetPositionFromSlice(new Vector2Int(2, 0), bishopObject.transform.localScale.y), new Vector2Int(2, 0)))
-                    .AddItem(PieceInitializer(bishopObject, color, "Piece-Bishop-Black-2", GetPositionFromSlice(new Vector2Int(5, 0), bishopObject.transform.localScale.y), new Vector2Int(5, 0)))
+                    .AddItem(PieceInitializer(bishopObject, color, "Piece-Bishop-Black-1", GetPositionFromSlice(new Vector2Int(2, 0), 0f), new Vector2Int(2, 0)))
+                    .AddItem(PieceInitializer(bishopObject, color, "Piece-Bishop-Black-2", GetPositionFromSlice(new Vector2Int(5, 0), 0f), new Vector2Int(5, 0)))
                     .AddItem(PieceInitializer(rookObject, color, "Piece-Rook-Black-1", GetPositionFromSlice(new Vector2Int(0, 0), rookObject.transform.localScale.y), new Vector2Int(0, 0)))
                     .AddItem(PieceInitializer(rookObject, color, "Piece-Rook-Black-2", GetPositionFromSlice(new Vector2Int(7, 0), rookObject.transform.localScale.y), new Vector2Int(7, 0)))
-                    .AddItem(PieceInitializer(knightObject, color, "Piece-Knight-Black-1", GetPositionFromSlice(new Vector2Int(1, 0), knightObject.transform.localScale.y), new Vector2Int(1, 0)))
-                    .AddItem(PieceInitializer(knightObject, color, "Piece-Knight-Black-2", GetPositionFromSlice(new Vector2Int(6, 0), knightObject.transform.localScale.y), new Vector2Int(6, 0)))
+                    .AddItem(PieceInitializer(knightObject, color, "Piece-Knight-Black-1", GetPositionFromSlice(new Vector2Int(1, 0), 0f), new Vector2Int(1, 0)))
+                    .AddItem(PieceInitializer(knightObject, color, "Piece-Knight-Black-2", GetPositionFromSlice(new Vector2Int(6, 0), 0f), new Vector2Int(6, 0)))
                     .AddItem(PieceInitializer(kingObject, color, "Piece-King-Black-1", GetPositionFromSlice(new Vector2Int(3, 0), kingObject.transform.localScale.y), new Vector2Int(3, 0)))
-                    .AddItem(PieceInitializer(queenObject, color, "Piece-Queen-Black-1", GetPositionFromSlice(new Vector2Int(4, 0), queenObject.transform.localScale.y), new Vector2Int(4, 0)))
+                    .AddItem(PieceInitializer(queenObject, color, "Piece-Queen-Black-1", GetPositionFromSlice(new Vector2Int(4, 0), 0f), new Vector2Int(4, 0)))
                     .GetList();
                 for (var i = 1; i <= 8; i++)
                 {
@@ -128,14 +133,14 @@ namespace Scrpts.ObjectScripts
             }
             else {
                 whitePieceList = new ListChain<Piece>()
-                    .AddItem(PieceInitializer(bishopObject, color, "Piece-Bishop-White-1", GetPositionFromSlice(new Vector2Int(2, 7), bishopObject.transform.localScale.y), new Vector2Int(2, 7)))
-                    .AddItem(PieceInitializer(bishopObject, color, "Piece-Bishop-White-2", GetPositionFromSlice(new Vector2Int(5, 7), bishopObject.transform.localScale.y), new Vector2Int(5, 7)))
+                    .AddItem(PieceInitializer(bishopObject, color, "Piece-Bishop-White-1", GetPositionFromSlice(new Vector2Int(2, 7), 0f), new Vector2Int(2, 7)))
+                    .AddItem(PieceInitializer(bishopObject, color, "Piece-Bishop-White-2", GetPositionFromSlice(new Vector2Int(5, 7), 0f), new Vector2Int(5, 7)))
                     .AddItem(PieceInitializer(rookObject, color, "Piece-Rook-White-1", GetPositionFromSlice(new Vector2Int(0, 7), rookObject.transform.localScale.y), new Vector2Int(0, 7)))
                     .AddItem(PieceInitializer(rookObject, color, "Piece-Rook-White-2", GetPositionFromSlice(new Vector2Int(7, 7), rookObject.transform.localScale.y), new Vector2Int(7, 7)))
-                    .AddItem(PieceInitializer(knightObject, color, "Piece-Knight-White-1", GetPositionFromSlice(new Vector2Int(1, 7), knightObject.transform.localScale.y), new Vector2Int(1, 7)))
-                    .AddItem(PieceInitializer(knightObject, color, "Piece-Knight-White-2", GetPositionFromSlice(new Vector2Int(6, 7), knightObject.transform.localScale.y), new Vector2Int(6, 7)))
+                    .AddItem(PieceInitializer(knightObject, color, "Piece-Knight-White-1", GetPositionFromSlice(new Vector2Int(1, 7), 0f), new Vector2Int(1, 7)))
+                    .AddItem(PieceInitializer(knightObject, color, "Piece-Knight-White-2", GetPositionFromSlice(new Vector2Int(6, 7), 0f), new Vector2Int(6, 7)))
                     .AddItem(PieceInitializer(kingObject, color, "Piece-King-White-1", GetPositionFromSlice(new Vector2Int(3, 7), kingObject.transform.localScale.y), new Vector2Int(3, 7)))
-                    .AddItem(PieceInitializer(queenObject, color, "Piece-Queen-White-1", GetPositionFromSlice(new Vector2Int(4, 7), queenObject.transform.localScale.y), new Vector2Int(4, 7)))
+                    .AddItem(PieceInitializer(queenObject, color, "Piece-Queen-White-1", GetPositionFromSlice(new Vector2Int(4, 7), 0f), new Vector2Int(4, 7)))
                     .GetList();
                 for (var i = 1; i <= 8; i++)
                 {
@@ -217,6 +222,8 @@ namespace Scrpts.ObjectScripts
         /// <param name="state">Target State</param>
         public void ChangeSliceState(Vector2Int index, int state)
         {
+            // Debug.Log(state);
+            // Debug.Log(index);
             switch (state)
             {
                 case InitConfig.STATE_NORMAL:

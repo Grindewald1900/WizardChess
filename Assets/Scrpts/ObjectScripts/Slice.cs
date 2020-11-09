@@ -1,4 +1,5 @@
 ﻿using System;
+using Scrpts.ObjectScripts.Pieces;
 using Scrpts.ToolScripts;
 using UnityEngine;
 
@@ -34,6 +35,32 @@ namespace Scrpts.ObjectScripts
 
         private void OnMouseDown()
         {
+            if (pieceName != "")
+            {
+                switch (StringTools.GetPieceType(pieceName))
+                {
+                    case InitConfig.PIECE_BISHOP:
+                        GameObject.Find(pieceName).GetComponent<Bishop>().OnClicked();
+                        break;
+                    case InitConfig.PIECE_PAWN:
+                        GameObject.Find(pieceName).GetComponent<Pawn>().OnClicked();
+                        break;
+                    case InitConfig.PIECE_ROOK:
+                        GameObject.Find(pieceName).GetComponent<Rook>().OnClicked();
+                        break;
+                    case InitConfig.PIECE_KNIGHT:
+                        GameObject.Find(pieceName).GetComponent<Knight>().OnClicked();
+                        break;
+                    case InitConfig.PIECE_QUEEN:
+                        GameObject.Find(pieceName).GetComponent<Queen>().OnClicked();
+                        break;
+                    case InitConfig.PIECE_KING:
+                        GameObject.Find(pieceName).GetComponent<King>().OnClicked();
+                        break;
+                }
+
+            }
+
             // If no piece selected, just return
             if (string.IsNullOrEmpty(Board.SharedInstance.selectedPiece)) return;
             // This slice has no piece on it and is highlight
@@ -43,7 +70,7 @@ namespace Scrpts.ObjectScripts
                     GameObject.Find(Board.SharedInstance.selectedPiece).GetComponent<Piece>().MoveToSlice(StringTools.GetSliceIndex(gameObject.name));
                 }
             }else {
-                Board.SharedInstance.ClearAllMarkSlice();
+                // Board.SharedInstance.ClearAllMarkSlice();
             }
         }
 
@@ -59,6 +86,7 @@ namespace Scrpts.ObjectScripts
         // Set the slice state to Highlight
         public void HighLight()
         {
+            Debug.Log(gameObject.name +  ": Highllight");
             _renderMaterials[0].color = Color.yellow;
             status = InitConfig.STATE_HIGHLIGHT;
         }
@@ -66,6 +94,7 @@ namespace Scrpts.ObjectScripts
         // Set the slice state to Selected
         public void Selected()
         {
+            Debug.Log(gameObject.name +  ": Selected");
             _renderMaterials[0].color = Color.red;
             status = InitConfig.STATE_SELECTED;
         }
@@ -76,6 +105,7 @@ namespace Scrpts.ObjectScripts
             // Name of the Slice contains two number, which represents the index of col and row.
             // If sum of col and row equals is divisible by 2, it is a black slice, otherwise white. 
             // e.g Piece-1-3
+            Debug.Log(gameObject.name +  ": Normal");
             _renderMaterials[0].color = StringTools.GetSliceNums(gameObject.name)%2 == 0 ? Color.black : Color.white;
             status = InitConfig.STATE_NORMAL;
         }

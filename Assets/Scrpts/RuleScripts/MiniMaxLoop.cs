@@ -29,17 +29,16 @@ public class MiniMaxLoop
 
     public void AutoPlay()
     {
-        if(_isBlackSide) return;
-        LogUtils.Log("Auto play");
-        LogUtils.Log("Size: " + aiList.Count);
-        foreach (var item in aiList)
+        // Todo
+        // if(_isBlackSide) return;
+        var searchList = _isBlackSide ? playerList : aiList;
+        foreach (var item in searchList)
         {
             var type = StringTools.GetPieceType(item.gameObject.name);
             var list = _moveRules.GetAvailableSlice(item.GetIndex(), type, _isBlackSide, false);
             // If no available slice, turn to next piece
             if (list.Count == 0)
                 continue;
-            
             // For each available slice, check if there's piece on it. If so, compare the piece value with current best score
             foreach (var index in list)
             {
@@ -56,7 +55,7 @@ public class MiniMaxLoop
         {
             while (true)
             {
-                _bestPiece = aiList[new Random().Next(aiList.Count)];
+                _bestPiece = searchList[new Random().Next(searchList.Count)];
                 var type = StringTools.GetPieceType(_bestPiece.gameObject.name);
                 var list = _moveRules.GetAvailableSlice(_bestPiece.GetIndex(), type, _isBlackSide, false);
                 // If no available slice, turn to next piece
@@ -67,9 +66,9 @@ public class MiniMaxLoop
             }
             
         }
-        LogUtils.Log("_bestScore: " + _bestScore);
-        LogUtils.Log("_bestIndex: " + _bestIndex);
-        LogUtils.Log("_bestPiece: " + _bestPiece.gameObject.name);
+        // LogUtils.Log("_bestScore: " + _bestScore);
+        // LogUtils.Log("_bestIndex: " + _bestIndex);
+        // LogUtils.Log("_bestPiece: " + _bestPiece.gameObject.name);
 
         // Move best piece to index, add best score to total 
         GameObject.Find(_bestPiece.gameObject.name).GetComponent<Piece>().MoveToSlice(_bestIndex);

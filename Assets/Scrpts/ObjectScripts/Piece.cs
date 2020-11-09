@@ -6,6 +6,7 @@ using Scrpts.ObjectScripts.Pieces;
 using Scrpts.RuleScripts;
 using Scrpts.ToolScripts;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Scrpts.ObjectScripts
 {
@@ -13,9 +14,10 @@ namespace Scrpts.ObjectScripts
     {
         // Position on the board(8*8)
         private Vector2Int Index;
-        protected int MoveStep;
         private Vector3 _position;
+        private NavMeshAgent _agent;
         protected int Status;
+        protected int MoveStep;
         protected MoveRules _moveRules;
         // protected bool _isPlayer;
         public bool isBlack;
@@ -31,6 +33,7 @@ namespace Scrpts.ObjectScripts
         public void Initialize(int color, string objName, Vector3 pos, Vector2Int index)
         {
             Status = InitConfig.STATE_NORMAL;
+            _agent = GetComponent<NavMeshAgent>();
             SetColor(color);
             SetObjectName(objName);
             SetPosition(pos);
@@ -41,6 +44,7 @@ namespace Scrpts.ObjectScripts
         public void MoveToSlice(Vector2Int toIndex)
         {
             InitConfig.IsPlayerTurn = !gameObject.name.Contains("Black");
+            LogUtils.Log("Is player:" + InitConfig.IsPlayerTurn);
             // If the pawn is moved for the first time, set isFirstStep to false
             if (gameObject.name.Contains("Pawn") && GameObject.Find(gameObject.name).GetComponent<Pawn>().isFirstStep) {
                 GameObject.Find(gameObject.name).GetComponent<Pawn>().isFirstStep = false;
@@ -63,14 +67,26 @@ namespace Scrpts.ObjectScripts
             // Set destination slice piece-name 
             Board.SharedInstance.SliceList[toIndex.x, toIndex.y].pieceName = gameObject.name;
             Board.SharedInstance.EditRecord(gameObject.name, GetIndex(), toIndex);
-            transform.position = Board.SharedInstance.SliceList[toIndex.x, toIndex.y].transform.position + new Vector3(0, transform.localScale.y * 0.5f,0);
+            _agent.destination = Board.SharedInstance.SliceList[toIndex.x, toIndex.y].transform.position + new Vector3(0, transform.localScale.y * 0.5f,0);
+            // transform.position = Board.SharedInstance.SliceList[toIndex.x, toIndex.y].transform.position + new Vector3(0, transform.localScale.y * 0.5f,0);
             SetIndex(toIndex);
             Board.SharedInstance.ClearAllMarkSlice();
-            
-            if (!InitConfig.IsPlayerTurn)
+
+            if (InitConfig.DUAL_AI)
             {
                 StartCoroutine(AutoPlay());
             }
+            else if (!InitConfig.IsPlayerTurn)
+            {
+                StartCoroutine(AutoPlay());
+            }
+
+            // if (!InitConfig.IsPlayerTurn)
+            // {
+            //     StartCoroutine(AutoPlay());
+            // }
+            // StopCoroutine("AutoPlay");
+
         }
 
         IEnumerator AutoPlay()
@@ -110,11 +126,12 @@ namespace Scrpts.ObjectScripts
         {
             if (color == 0) {
                 isBlack = true;
-                GetComponent<MeshRenderer>().materials[0].color = Color.red;
+                // GetComponent<MeshRenderer>().materials[0].color = Color.red;
             }else
             {
                 isBlack = false;
-                GetComponent<MeshRenderer>().materials[0].color = Color.white;
+                transform.Rotate(0,180,0);
+                // GetComponent<MeshRenderer>().materials[0].color = Color.white;
             }
         }
 
