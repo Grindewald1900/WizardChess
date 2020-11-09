@@ -50,6 +50,7 @@ namespace Scrpts.ObjectScripts
             aiScore = 0;
             InitConfig.IsPlayerTurn = true;
             InitConfig.AI_TYPE = InitConfig.AI_MINIMAX_LOOP;
+            InitConfig.DUAL_AI = false;
             InitSlices();
             InitPieces(0);
             InitPieces(1);

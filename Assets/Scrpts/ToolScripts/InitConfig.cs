@@ -9,8 +9,10 @@ public class InitConfig : MonoBehaviour
     public static bool IsClickable;
     // Player and AI move their pieces in turn
     public static bool IsPlayerTurn;
-
+    // AI types according to main setting value
     public static int AI_TYPE;
+    // If true, 2 AI players
+    public static bool DUAL_AI;
     
     public const int STATE_NORMAL = 100;
     public const int STATE_SELECTED = 101;
@@ -34,6 +36,7 @@ public class InitConfig : MonoBehaviour
     public const int AI_MINIMAX_LOOP = 201;
     public const int AI_MINIMAX_ALPHA_BETA = 202;
     public const int AI_RANDOM = 203;
+    
 
 
     
