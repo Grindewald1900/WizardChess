@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Scrpts.RuleScripts;
 using UnityEngine;
@@ -19,21 +20,6 @@ namespace Scrpts.ObjectScripts.Pieces
 
         }
         
-        private void OnMouseDown()
-        {
-            var markList = new List<Vector2Int>();
-            // If the pawn doesn't touch the base line of its opponent, run the inner code below
-            if (!(isBlack && GetIndex().y == InitConfig.BOARD_SIZE - 1) && !(!isBlack && GetIndex().y == 0))
-            {
-                if (isFirstStep) {
-                    markList.AddRange(_moveRules.Pawn(GetIndex(), MoveStep, isBlack, true));
-                }else {
-                    markList.AddRange(_moveRules.Pawn(GetIndex(), MoveStep, isBlack, false));
-                }
-            }
-            MouseClick(markList);
-        }
-        
         public void OnClicked()
         {
             Debug.Log("Pawn Clicked");
@@ -49,6 +35,7 @@ namespace Scrpts.ObjectScripts.Pieces
             }
             MouseClick(markList);
         }
+
         
     }
 }

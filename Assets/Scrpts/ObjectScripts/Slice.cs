@@ -105,7 +105,7 @@ namespace Scrpts.ObjectScripts
             // Name of the Slice contains two number, which represents the index of col and row.
             // If sum of col and row equals is divisible by 2, it is a black slice, otherwise white. 
             // e.g Piece-1-3
-            Debug.Log(gameObject.name +  ": Normal");
+            // Debug.Log(gameObject.name +  ": Normal");
             _renderMaterials[0].color = StringTools.GetSliceNums(gameObject.name)%2 == 0 ? Color.black : Color.white;
             status = InitConfig.STATE_NORMAL;
         }

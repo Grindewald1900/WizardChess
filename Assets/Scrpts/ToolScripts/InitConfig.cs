@@ -36,10 +36,14 @@ public class InitConfig : MonoBehaviour
     public const int AI_MINIMAX_LOOP = 201;
     public const int AI_MINIMAX_ALPHA_BETA = 202;
     public const int AI_RANDOM = 203;
-    
+
+    public const int IDLE = 301;
+    public const int WALK = 302;
+    public const int ATTACK = 303;
+    public const int GETATTACK = 304;
+    public const int DIE = 305;
 
 
-    
     // Start is called before the first frame update
 
     private void Start()
