@@ -270,8 +270,8 @@ In this part, we add `rigidbody` and `collider` to each character and their weap
 In this part, to built rules for the chess game, we divided rules into variety classes, that is `Diagonal`, `Column`, `Row`, `Pawn` and `Knight`. For each rule, the corresponding 
 function returns a Vector2 list, which contains all the available index for the piece under a certain rule.  
 
-<div align=center><img src="https://github.com/Grindewald1900/General-notes/blob/master/Image/Game/4-10.png?raw=true" width="60%" height="60%"></div>  <br></br>
-<div align=center><img src="https://github.com/Grindewald1900/General-notes/blob/master/Image/Game/4-12.png?raw=true" width="60%" height="60%"></div>  <br></br>
+<div align=center><img src="https://github.com/Grindewald1900/General-notes/blob/master/Image/Game/4-10.png?raw=true" width="80%" height="80%"></div>  <br></br>
+<div align=center><img src="https://github.com/Grindewald1900/General-notes/blob/master/Image/Game/4-12.png?raw=true" width="80%" height="80%"></div>  <br></br>
 
 
 **Diagonal lines**    
@@ -487,8 +487,8 @@ In this part, we built a main menu which include a submenu to modify the game se
 move it to a random destination which is selected from its available list.  
 
 <div align=center><img src="https://github.com/Grindewald1900/General-notes/blob/master/Image/Game/4-13.png?raw=true" width="60%" height="60%"></div>  <br></br>
-<div align=center><img src="https://github.com/Grindewald1900/General-notes/blob/master/Image/Game/4-14.png?raw=true" width="60%" height="60%"></div>  <br></br>
-<div align=center><img src="https://github.com/Grindewald1900/General-notes/blob/master/Image/Game/4-15.png?raw=true" width="60%" height="60%"></div>  <br></br>
+<div align=center><img src="https://github.com/Grindewald1900/General-notes/blob/master/Image/Game/4-14.png?raw=true" width="30%" height="30%"></div>  <br></br>
+<div align=center><img src="https://github.com/Grindewald1900/General-notes/blob/master/Image/Game/4-15.png?raw=true" width="30%" height="30%"></div>  <br></br>
 
 
 
