@@ -7,6 +7,7 @@ using Scrpts.RuleScripts;
 using Scrpts.ToolScripts;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SocialPlatforms.Impl;
 
 namespace Scrpts.ObjectScripts
 {
@@ -15,8 +16,9 @@ namespace Scrpts.ObjectScripts
         // Position on the board(8*8)
         private Vector2Int Index;
         private Vector3 _position;
-        private bool _isRouting;
         private bool _hasEnemy;
+        
+
         protected NavMeshAgent _agent;
         protected int Status;
         protected int MoveStep;
@@ -24,7 +26,11 @@ namespace Scrpts.ObjectScripts
         // protected bool _isPlayer;
         public bool isBlack;
         public int pieceScore;
+        public string attackerName;
         public Animator Animator;
+        
+
+        
         private static readonly int Walk = Animator.StringToHash("Walk");
         private static readonly int Attack = Animator.StringToHash("Attack");
         private static readonly int GetAttack = Animator.StringToHash("GetHurt");
@@ -32,15 +38,7 @@ namespace Scrpts.ObjectScripts
 
         private bool isMoving = false;
         private float _stopDistance = 0f;
-
-
-
         
-        // Update is called once per frame
-        private void Update()
-        {
-        }
-
         private void FixedUpdate()
         {
             if(!isMoving) return;
@@ -50,12 +48,14 @@ namespace Scrpts.ObjectScripts
             // Debug.Log(gameObject.name + " : " + GeneralTools.GetRealDistance(transform.position, _agent.destination));
             
             // If moving towards an non-empty slice, stop before enemy and attack.
+            // transform.Rotate(_agent.destination - transform.position);
+            var rot = Quaternion.LookRotation(_agent.destination - transform.position);
+            transform.rotation = rot;
             if(GeneralTools.GetRealDistance(transform.position, _agent.destination) < 0.2f + _stopDistance)
             {
                 _agent.isStopped = true;
                 _agent.velocity = Vector3.zero;
                 ChangeAnimationState(InitConfig.IDLE);
-                _isRouting = false;
                 if (_hasEnemy)
                 {
                     ChangeAnimationState(InitConfig.ATTACK);
@@ -64,29 +64,42 @@ namespace Scrpts.ObjectScripts
             
                 isMoving = false;
             }
+
+            if (GeneralTools.GetRealDistance(transform.position, _agent.destination) < 0.2f)
+            {
+                ChangeAnimationState(InitConfig.IDLE);
+            }
         }
 
-        IEnumerator CompleteMovement()
-        {
-            yield return new WaitForSeconds(2);
-            _agent.isStopped = false;
-            Debug.Log("Agent des: " + _agent.destination);
-        }
+        
 
-
+        /// <summary>
+        /// Initialize a certain piece
+        /// </summary>
+        /// <param name="color">b</param>
+        /// <param name="objName"></param>
+        /// <param name="pos"></param>
+        /// <param name="index"></param>
         public void Initialize(int color, string objName, Vector3 pos, Vector2Int index)
         {
             Status = InitConfig.STATE_NORMAL;
             _agent = GetComponent<NavMeshAgent>();
-            _isRouting = false;
             Animator = GetComponent<Animator>();
             SetColor(color);
             SetObjectName(objName);
             SetPosition(pos);
             SetIndex(index);
+            Debug.Log("Camp: " + gameObject.name);
+            var camp = ObjectGenerater.SharedInstance.GetCampSphere(isBlack);
+            camp.name = "Camp-" + gameObject.name;
+            camp.transform.position = transform.position + new Vector3(0, 1.6f, 0);
+            camp.transform.SetParent(transform);
         }
         
-        // Move this piece from A to B
+        /// <summary>
+        /// Move this piece from A to B
+        /// </summary>
+        /// <param name="toIndex">index of destination slice</param>
         public void MoveToSlice(Vector2Int toIndex)
         {
             Debug.Log("Move:" + gameObject.name + " to " + toIndex);
@@ -96,15 +109,13 @@ namespace Scrpts.ObjectScripts
                 GameObject.Find(gameObject.name).GetComponent<Pawn>().isFirstStep = false;
             }
             
-            ChangeAnimationState(InitConfig.WALK);
-            _isRouting = true;
             // If an opponent stands on destination slice, remove that piece 
             if (Board.SharedInstance.SliceList[toIndex.x, toIndex.y].pieceName != "")
             {
-                _stopDistance = 0.5f;
+                _stopDistance = 1f;
                 _hasEnemy = true;
                 var piece = GameObject.Find(Board.SharedInstance.SliceList[toIndex.x, toIndex.y].pieceName).GetComponent<Piece>();
-                // piece.gameObject.SetActive(false);
+                piece.attackerName = gameObject.name;
                 if (piece.isBlack) {
                     Board.SharedInstance.blackPieceList.Remove(piece);
                 }else {
@@ -114,6 +125,14 @@ namespace Scrpts.ObjectScripts
                 // Move to an empty slice
                 _hasEnemy = false;
             }
+            
+            ChangeAnimationState(InitConfig.WALK);
+
+            // if (GeneralTools.GetRealDistance(transform.position, _agent.destination) > _stopDistance)
+            // {
+            //     ChangeAnimationState(InitConfig.WALK);
+            // }
+
             // Reset origin slice piece-name 
             Board.SharedInstance.SliceList[Index.x, Index.y].pieceName = "";
             // Set destination slice piece-name 
@@ -137,23 +156,16 @@ namespace Scrpts.ObjectScripts
             {
                 StartCoroutine(AutoPlay());
             }
-
-            // if (!InitConfig.IsPlayerTurn)
-            // {
-            //     StartCoroutine(AutoPlay());
-            // }
-            // StopCoroutine("AutoPlay");
-
         }
 
         IEnumerator AutoPlay()
         {
             // Wait for 1 sec
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(3);
             switch (InitConfig.AI_TYPE)
             {
                 case InitConfig.AI_MINIMAX_LOOP:
-                    var minimax = new MiniMaxLoop(InitConfig.IsPlayerTurn);
+                    var minimax = new MiniMaxLoop(InitConfig.IsPlayerTurn, 2);
                     minimax.AutoPlay();
                     break;
                 case InitConfig.AI_MINIMAX_ALPHA_BETA:
@@ -163,6 +175,32 @@ namespace Scrpts.ObjectScripts
                 default:
                     break;
             }
+        }
+
+        IEnumerator CompleteMovement()
+        {
+            yield return new WaitForSeconds(2);
+            _agent.isStopped = false;
+            var rot = Quaternion.LookRotation(isBlack ? Vector3.forward : Vector3.back);
+            transform.rotation = rot;
+            // ChangeAnimationState(InitConfig.WALK);
+        }
+
+        IEnumerator DestroyPiece()
+        {
+            yield return new WaitForSeconds(1.5f);
+            gameObject.SetActive(false);
+            if (isBlack) {
+                Board.SharedInstance.EditScore(0, pieceScore);
+            }else {
+                Board.SharedInstance.EditScore(pieceScore, 0);
+            }
+            if (gameObject.name.Contains("King"))
+            {
+                Board.SharedInstance.EditHint(gameObject.name.Contains("Black") ? "You Lose!" : "You Win!");
+                InitConfig.IsClickable = false;
+            }
+
         }
         public void SetIndex(Vector2Int index)
         {
@@ -226,15 +264,12 @@ namespace Scrpts.ObjectScripts
                     // Case3: Another Piece selected, then click on a highlighted piece
                     if (Board.SharedInstance.SliceList[GetIndex().x, GetIndex().y].status == InitConfig.STATE_HIGHLIGHT)
                     {
-
                         var p = GameObject.Find(Board.SharedInstance.selectedPiece).GetComponent<Piece>();
                         Board.SharedInstance.ClearAllMarkSlice();
                         // Return if this is not opponent of the selected piece
                         if(p.isBlack == isBlack) return;
                         // Destroy this object
                         p.MoveToSlice(GetIndex());
-                        gameObject.SetActive(false);
-
                     }
                     
                 }
@@ -249,14 +284,28 @@ namespace Scrpts.ObjectScripts
         
         private void OnTriggerEnter(Collider other)
         {
-            if (other.attachedRigidbody.transform.gameObject.name.Contains("Piece"))
+            Debug.Log("Attacker name: " + attackerName);
+            Debug.Log(gameObject.name + "Collide into : " + other.transform.root.name);
+            // If enemy's weapon collide with this piece, get a backward force and play animation[GetAttack], then animation[GetAttack]
+            if (other.transform.root.name == attackerName)
             {
-                // other.attachedRigidbody.AddForce((other.attachedRigidbody.transform.position - transform.position));
+                ChangeAnimationState(InitConfig.GETATTACK);
+                ChangeAnimationState(InitConfig.DIE);
+                Debug.Log(gameObject.name +  " : GetForce  " + (transform.position - other.transform.root.position));
+                GetComponent<Rigidbody>().AddForce((transform.position - other.transform.root.position) * 20, ForceMode.Impulse);
+                StartCoroutine(DestroyPiece());
             }
+        }
+
+
+        public void PieceGetAttack()
+        {
+            
         }
 
         private void ChangeAnimationState(int state)
         {
+            // var audioPlayer = new AudioPlayer();
             switch (state)
             {
                 // Idle State
@@ -271,18 +320,21 @@ namespace Scrpts.ObjectScripts
                     break;
                 // Attack State
                 case InitConfig.ATTACK:
+                    AudioPlayer.SharedInstance.PlayAttackAudio();
                     Animator.SetBool(Walk, false);
                     Animator.SetBool(Attack, true);
                     break;
                 // Hurt State
                 case InitConfig.GETATTACK:
+                    AudioPlayer.SharedInstance.PlayGetAttackAudio();
+
                     Animator.SetBool(GetAttack, true);
                     break;
                 // Destroy State
                 case InitConfig.DIE:
+                    AudioPlayer.SharedInstance.PlayDieAudio();
+
                     Animator.SetBool(Die, true);
-                    break;
-                default:
                     break;
             }
         }

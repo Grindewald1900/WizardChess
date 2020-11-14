@@ -17,21 +17,27 @@ public class MiniMaxLoop
     private Piece _bestPiece;
     private bool _isBlackSide;
     private MoveRules _moveRules;
+    public int AI_LEVEL;
 
-    public MiniMaxLoop(bool side)
+    public MiniMaxLoop(bool side, int level)
     {
         playerList = Board.SharedInstance.blackPieceList;
         aiList = Board.SharedInstance.whitePieceList;
         _moveRules = new MoveRules();
         _bestScore = 0;
         _isBlackSide = side;
+        AI_LEVEL = 1;
+        _depth = 0;
+        if (level >= 1) AI_LEVEL = level * 2 - 1;
     }
 
     public void AutoPlay()
     {
         // Todo
-        // if(_isBlackSide) return;
+        if(!InitConfig.IsClickable) return;
         var searchList = _isBlackSide ? playerList : aiList;
+        _depth++;
+        
         foreach (var item in searchList)
         {
             var type = StringTools.GetPieceType(item.gameObject.name);
@@ -72,7 +78,6 @@ public class MiniMaxLoop
 
         // Move best piece to index, add best score to total 
         GameObject.Find(_bestPiece.gameObject.name).GetComponent<Piece>().MoveToSlice(_bestIndex);
-        Board.SharedInstance.EditScore(0, Math.Abs(_bestScore));
         
     }
 }

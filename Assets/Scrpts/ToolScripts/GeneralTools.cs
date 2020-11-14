@@ -15,7 +15,6 @@ public class GeneralTools
     {
         var xDistanceSqrt = Math.Pow(origin.x - destin.x, 2);
         var yDistanceSqrt = Math.Pow(origin.z - destin.z, 2);
-        Debug.Log("Sum: " + xDistanceSqrt + yDistanceSqrt);
         if (xDistanceSqrt + yDistanceSqrt == 0) return 0;
         return Convert.ToSingle(Math.Sqrt(xDistanceSqrt + yDistanceSqrt));
     }

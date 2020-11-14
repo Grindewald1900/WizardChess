@@ -264,12 +264,16 @@ namespace Scrpts.ObjectScripts
         // e.g. "Your turn"
         public void EditScore(int pScore, int aScore)
         {
-            playerScore += pScore;
-            aiScore += aScore;
+            playerScore += Math.Abs(pScore);
+            aiScore += Math.Abs(aScore);
             scoreText.text = "Score: " + playerScore + " - " + aiScore;
             hintText.text = InitConfig.IsPlayerTurn ? "Your turn" : "AI turn";
         }
 
+        public void EditHint(string hint)
+        {
+            hintText.text = hint;
+        }
         public void EditRecord(string pName, Vector2Int fromIndex, Vector2Int toIndex)
         {
             _record += "\n" + pName + ": Move from " + fromIndex + " To " + toIndex;
